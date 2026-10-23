@@ -37,8 +37,28 @@ jobs:
                   applicationId "com.weker.autoclicker"
                   minSdk 24
                   targetSdk 34
-                  versionCode 1
-                  versionName "1.0"
+                  versionCode 2
+                  versionName "1.1"
+              }
+              signingConfigs {
+                  release {
+                      storeFile file("release.jks")
+                      storePassword "autoclicker"
+                      keyAlias "key"
+                      keyPassword "autoclicker"
+                      enableV1Signing true
+                      enableV2Signing true
+                  }
+              }
+              buildTypes {
+                  release {
+                      minifyEnabled false
+                      signingConfig signingConfigs.release
+                  }
+              }
+              lint {
+                  checkReleaseBuilds false
+                  abortOnError false
               }
               compileOptions {
                   sourceCompatibility JavaVersion.VERSION_17
@@ -48,8 +68,8 @@ jobs:
           EOF
       - name: Build
         working-directory: build-src
-        run: gradle assembleDebug --no-daemon
-      - run: cp build-src/app/build/outputs/apk/debug/app-debug.apk AutoClicker.apk
+        run: gradle assembleRelease --no-daemon
+      - run: cp build-src/app/build/outputs/apk/release/app-release.apk AutoClicker.apk
       - uses: actions/upload-artifact@v4
         with:
           name: AutoClicker-apk
